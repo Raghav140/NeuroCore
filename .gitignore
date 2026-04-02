@@ -1,0 +1,25 @@
+# Virtual environments
+.venv/
+venv/
+
+# Python cache/artifacts
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+
+# Packaging/build artifacts
+build/
+dist/
+*.egg-info/
+
+# IDE/system artifacts
+.DS_Store
+Thumbs.db
+
+# Runtime outputs
+benchmark*.json
+nn_from_scratch_binary_model.json
+nn_from_scratch_binary_model.npz

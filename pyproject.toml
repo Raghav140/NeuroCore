@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "neurocore-numpy"
+version = "0.1.0"
+description = "NeuroCore: a NumPy/CuPy educational deep learning framework with PyTorch-style modules."
+readme = "nn_from_scratch/README.md"
+requires-python = ">=3.10"
+authors = [{name = "Raghav Sharma"}]
+dependencies = ["numpy>=1.24"]
+
+[project.optional-dependencies]
+dashboard = ["streamlit>=1.30", "matplotlib>=3.7"]
+gpu = ["cupy-cuda12x>=12.0; platform_system == 'Windows' or platform_system == 'Linux'"]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+nnfs-train = "nnfs.cli:main"
+nnfs-benchmark = "nnfs.benchmark_cli:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["nnfs*"]
