@@ -1,14 +1,14 @@
 # API Reference (Core)
 
-Project: **NeuroCore** (Python import name: `nnfs`)
+Project: **NeuroCore** (Python import name: `ncfs`)
 
-## `nnfs.core.tensor`
+## `ncfs.core.tensor`
 
 - `Tensor(data, requires_grad=False)`
 - `tensor(data, requires_grad=False)`
 - Autograd-enabled ops: `+`, `-`, `*`, `/`, `@`, `sum`, `mean`, `exp`, `log`, `tanh`, `relu`, `reshape`, `backward`
 
-## `nnfs.core.module`
+## `ncfs.core.module`
 
 - `Module`
   - `forward`, `__call__`, `parameters`, `named_parameters`, `zero_grad`
@@ -16,7 +16,7 @@ Project: **NeuroCore** (Python import name: `nnfs`)
   - hook registration
 - `Parameter`
 
-## `nnfs.layers`
+## `ncfs.layers`
 
 - `Dense`
 - `BatchNorm1d`
@@ -27,19 +27,19 @@ Project: **NeuroCore** (Python import name: `nnfs`)
 - `Embedding`
 - Activations: `ReLU`, `Sigmoid`, `Tanh`, `Softmax`
 
-## `nnfs.optim`
+## `ncfs.optim`
 
 - `SGD`
 - `StepLR`
 - `ReduceLROnPlateau`
 
-## `nnfs.core.trainer`
+## `ncfs.core.trainer`
 
 - `Trainer`
 - `TrainerConfig`
 - `Callback`
 
-## `nnfs.utils`
+## `ncfs.utils`
 
 - datasets: `make_xor`, `make_binary_classification`, `make_regression`
 - metrics: `accuracy_score`, `f1_binary`, `confusion_matrix_binary`

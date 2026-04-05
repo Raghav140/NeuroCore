@@ -21,5 +21,12 @@ Thumbs.db
 
 # Runtime outputs
 benchmark*.json
-nn_from_scratch_binary_model.json
-nn_from_scratch_binary_model.npz
+*_binary_model.json
+*_binary_model.npz
+training_history.json
+*.log
+
+# Screenshots and temp files
+screenshots/*.png
+*.tmp
+temp/

@@ -19,7 +19,7 @@ STEP_LR_REG_STEP_SIZE = 400
 STEP_LR_REG_GAMMA = 0.7
 
 # Model save path prefix (without extension)
-BINARY_MODEL_SAVE_PREFIX = "nn_from_scratch_binary_model"
+BINARY_MODEL_SAVE_PREFIX = "nc_from_scratch_binary_model"
 
 # ReduceLROnPlateau settings (regression demo)
 REDUCE_LR_FACTOR = 0.7

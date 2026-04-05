@@ -1,6 +1,6 @@
 # Autograd Internals
 
-This document explains how **NeuroCore** (`nnfs`) automatic differentiation works step by step.
+This document explains how **NeuroCore** (`ncfs`) automatic differentiation works step by step.
 
 ## Core Tensor Fields
 

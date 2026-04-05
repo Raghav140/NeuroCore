@@ -1,4 +1,6 @@
-"""Optimizer exports."""
+"""Optimization algorithms."""
 
-from .optimizers import SGD
-from .schedulers import ReduceLROnPlateau, StepLR
+from .sgd import SGD, Adam
+from .scheduler import StepLR, ExponentialLR, ReduceLROnPlateau
+
+__all__ = ["SGD", "Adam", "StepLR", "ExponentialLR", "ReduceLROnPlateau"]

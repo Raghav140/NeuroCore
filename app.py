@@ -1,4 +1,4 @@
-"""Streamlit training dashboard for nnfs."""
+"""Streamlit training dashboard for NNFS."""
 
 from __future__ import annotations
 
@@ -6,11 +6,13 @@ import numpy as np
 import streamlit as st
 import matplotlib.pyplot as plt
 
-from nnfs import BCELoss, Trainer
-from nnfs.core.trainer import TrainerConfig
-from nnfs.dashboard_logic import build_binary_model, decision_boundary_grid
+import nnfs
+from nnfs.layers import Dense, ReLU, Sigmoid
 from nnfs.optim import SGD
-from nnfs.utils import accuracy_score, confusion_matrix_binary, f1_binary, make_binary_classification, make_xor
+from nnfs.utils import (
+    accuracy_score, confusion_matrix_binary, f1_binary, 
+    make_binary_classification, make_xor, train_test_split
+)
 
 
 st.set_page_config(page_title="NNFS Dashboard", layout="wide")
@@ -62,6 +64,39 @@ with st.sidebar:
     train_btn = st.button("Train Model", use_container_width=True, type="primary")
 
 
+def build_binary_model(input_dim: int, hidden: int, activation: str):
+    """Build a binary classification model."""
+    layers = [Dense(input_dim, hidden)]
+    
+    if activation == "ReLU":
+        layers.append(ReLU())
+    else:
+        layers.append(Sigmoid())
+    
+    layers.extend([
+        Dense(hidden, 1),
+        Sigmoid()
+    ])
+    
+    return nnfs.Sequential(*layers)
+
+
+def decision_boundary_grid(model, X, resolution=100):
+    """Generate decision boundary grid for visualization."""
+    x_min, x_max = X.data[:, 0].min() - 0.5, X.data[:, 0].max() + 0.5
+    y_min, y_max = X.data[:, 1].min() - 0.5, X.data[:, 1].max() + 0.5
+    
+    xx, yy = np.meshgrid(
+        np.linspace(x_min, x_max, resolution),
+        np.linspace(y_min, y_max, resolution)
+    )
+    
+    mesh_points = np.c_[xx.ravel(), yy.ravel()]
+    Z = model(nnfs.Tensor(mesh_points)).data.reshape(xx.shape)
+    
+    return xx, yy, Z
+
+
 def _plot_decision_boundary(X, y, xx, yy, zz):
     fig, ax = plt.subplots(figsize=(7.5, 5.5))
     ax.contourf(xx, yy, zz, levels=20, alpha=0.55, cmap="coolwarm")
@@ -84,27 +119,31 @@ if train_btn:
         progress = st.progress(10, text="Preparing dataset...")
         np.random.seed(seed)
         if dataset_name == "XOR":
-            X, y = make_xor(500)
+            X, y = make_xor(500, noise=0.1, random_state=seed)
         else:
-            X, y = make_binary_classification(600, noise=0.2)
+            X, y = make_binary_classification(600, n_features=2, noise=0.2, random_state=seed)
 
         progress.progress(35, text="Building model...")
         model = build_binary_model(input_dim=X.shape[1], hidden=hidden, activation=activation)
-        trainer = Trainer(model, BCELoss(), SGD(model.parameters(), lr=lr))
+        
+        # Setup trainer
+        optimizer = SGD(model.parameters(), lr=lr)
+        loss_fn = nnfs.BCELoss()
+        config = nnfs.TrainerConfig(epochs=epochs, batch_size=batch_size, log_interval=max(1, epochs // 10))
+        trainer = nnfs.Trainer(model, loss_fn, optimizer, config)
 
         progress.progress(65, text="Running training loop...")
-        history = trainer.fit(X, y, TrainerConfig(epochs=epochs, batch_size=batch_size))
+        history = trainer.fit(X, y)
         preds = model(X)
         progress.progress(100, text="Done.")
 
     st.success("Training completed successfully.")
 
     np.random.seed(seed)
-    acc = accuracy_score(y, preds)
+    acc = accuracy_score(y, nnfs.Tensor((preds.data > 0.5).astype(int).flatten()))
     f1 = f1_binary(y, preds)
-    cm = confusion_matrix_binary(y, preds)
-    final_loss = history["loss"][-1] if history["loss"] else float("nan")
-    final_grad_norm = history["grad_norm"][-1] if history["grad_norm"] else float("nan")
+    cm = confusion_matrix_binary(y, nnfs.Tensor((preds.data > 0.5).astype(int).flatten()))
+    final_loss = history.train_loss[-1] if history.train_loss else float("nan")
 
     col1, col2, col3 = st.columns(3)
     with col1:
@@ -118,7 +157,6 @@ if train_btn:
     with col3:
         st.markdown('<div class="metric-card">', unsafe_allow_html=True)
         st.metric("Final Loss", f"{final_loss:.4f}")
-        st.caption(f"Final grad norm: {final_grad_norm:.4f}")
         st.markdown("</div>", unsafe_allow_html=True)
 
     tab1, tab2, tab3 = st.tabs(["Training Curves", "Decision Boundary", "Confusion Matrix"])
@@ -127,28 +165,26 @@ if train_btn:
         left, right = st.columns(2)
         with left:
             st.subheader("Loss")
-            st.line_chart({"loss": history["loss"]})
+            st.line_chart({"loss": history.train_loss})
         with right:
             st.subheader("Accuracy")
-            st.line_chart({"accuracy": history["accuracy"]})
-        st.subheader("Gradient Norm")
-        st.line_chart({"grad_norm": history["grad_norm"]})
+            st.line_chart({"accuracy": history.train_accuracy})
 
     with tab2:
         if X.shape[1] == 2:
             xx, yy, zz = decision_boundary_grid(model, X)
-            fig = _plot_decision_boundary(X, y, xx, yy, zz)
+            fig = _plot_decision_boundary(X.data, y.data, xx, yy, zz)
             st.pyplot(fig, use_container_width=True)
         else:
             st.info("Decision boundary is available for 2D datasets only.")
 
     with tab3:
         cm_data = {
-            "Pred 0": [int(cm[0, 0]), int(cm[1, 0])],
-            "Pred 1": [int(cm[0, 1]), int(cm[1, 1])],
+            "Pred 0": [int(cm[2]), int(cm[1])],
+            "Pred 1": [int(cm[0]), int(cm[3])],
         }
         st.subheader("Confusion Matrix (Rows = True labels)")
         st.table(cm_data)
-        st.caption(f"TN={cm[0,0]} FP={cm[0,1]} FN={cm[1,0]} TP={cm[1,1]}")
+        st.caption(f"TN={cm[2]} FP={cm[1]} FN={cm[0]} TP={cm[3]}")
 else:
     st.info("Configure an experiment from the sidebar and click **Train Model**.")
