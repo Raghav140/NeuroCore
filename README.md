@@ -29,14 +29,75 @@ Built with ❤️ using PyTorch-style API for learning how deep learning works u
 
 ---
 
-## 🚀 Quick Start
+## 📸 Screenshots
+
+<div align="center">
+
+### 🖥️ Streamlit Dashboard
+Interactive training interface with real-time visualization and professional UI
+
+![Streamlit Dashboard](screenshots/streamlit_dashboard.png)
+
+**Features demonstrated:**
+- 🎛️ **Interactive Controls**: Dataset selection, model configuration, training parameters
+- 📊 **Real-time Metrics**: Accuracy, F1 Score, and Loss tracking
+- 📈 **Visualizations**: Training curves, decision boundaries, confusion matrix
+- 🎨 **Professional Design**: Modern gradient UI with responsive layout
+
+### 🖱️ CLI Interface
+Professional command-line tools for training and benchmarking
+
+```
+====================================
+========================              🚀 NNFS Training CLI
+============================================================            
+--- Configuration ---
+  Dataset: xor
+  Epochs: 20
+  Learning Rate: 0.2
+  Batch Size: 32
+  Hidden Size: 64
+  Momentum: 0.0
+  Backend: numpy
+
+--- Training ---
+🚀 Starting training for 20 epochs
+📊 Batch size: 32 | Learning rate: 0.2
+🔧 Backend: numpy
+------------------------------------
+--------------------------------------------                            
+Epoch  10 | Train Loss: 0.0208 | Train Acc: 1.0000
+Epoch  20 | Train Loss: 0.0007 | Train Acc: 1.0000
+✅ Training completed!
+� Training history saved to training_history.json
+--- Results ---
+  Train Loss: 0.0007
+  Train Accuracy: 1.0000
+  Test Loss: 0.0008
+  Test Accuracy: 1.0000
+```
+
+### 📊 Framework Capabilities
+Complete deep learning framework built from scratch
+
+| ✅ **Core Features** | 🧠 **Neural Networks** | ⚡ **Performance** |
+|---------------------|------------------------|-------------------|
+| Automatic Differentiation | Dense, Conv2D, Pooling | NumPy/CuPy Backend |
+| PyTorch-style API | Activations, Dropout | GPU Acceleration |
+| Training Utilities | Loss Functions | Benchmarking Tools |
+
+</div>
+
+---
+
+## �� Quick Start
 
 ### Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/nnfs.git
-cd nnfs
+git clone https://github.com/Raghav140/NeuroCore.git
+cd NeuroCore
 
 # Install in development mode
 pip install -e .
@@ -289,8 +350,8 @@ python -m unittest discover -s tests -v
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/nnfs.git
-cd nnfs
+git clone https://github.com/Raghav140/NeuroCore.git
+cd NeuroCore
 
 # Install development dependencies
 pip install -e ".[dev]"
@@ -346,6 +407,13 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 - 🚀 Educational framework based on deep learning fundamentals
 
 </div>
+
+## 🔗 Links
+
+- [Documentation](https://github.com/Raghav140/NeuroCore/wiki)
+- [Examples](examples/)
+- [API Reference](https://github.com/Raghav140/NeuroCore/wiki/API)
+- [Issues & Feature Requests](https://github.com/Raghav140/NeuroCore/issues)
 
 ---
 
